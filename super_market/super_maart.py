@@ -1,8 +1,12 @@
+# import required modules 
 import json 
 from datetime import datetime
 from beautifultable import BeautifulTable
 
 def load_json(database_json_file="super_mart.json"):
+    """
+    This function will load json data from library.json file if it exist else crean an empty array
+    """
     try:
         with open(database_json_file, "r") as read_it: 
             all_data_base = json.load(read_it) 
@@ -14,10 +18,16 @@ def load_json(database_json_file="super_mart.json"):
         return all_data_base
 
 def save_json(data, database_json_file="super_mart.json"):
+    """
+    This function Save data sync all data in library.json file if it exist else create it.
+    """
     with open(database_json_file, "w") as p: 
         json.dump(data, p) 
         
 def all_data_init():
+    """
+    This function initialse data if it exist else create an empty one 
+    """
     all_products = all_data_base.get("all_products")
     if all_products is None:
         all_data_base['all_products'] = dict()
@@ -28,11 +38,17 @@ def all_data_init():
     return None
 
 def current_time_is():
+    """
+    This function create time stamp for keep our book issue record trackable 
+    """
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     return dt_string
 
 def product_addition():
+    """
+    This function is use to add products in your cart
+    """
     product_name  = input("Please enter product name that you want to add :")
     prduct_price = float(input("plese enter price for this product :"))
 
@@ -46,18 +62,23 @@ def product_addition():
 
 
 def product_buying():
-    
+    """
+    This function is use to display checkout table 
+    """
     billing_table = BeautifulTable()
     billing_table.column_headers = ["Sr no.", "Product Name ", "Price","Quantity", "Row total"]
     total_charges = list()
     dict_of_record = dict()
     
     def buy_pro():
+        """
+        Here I use another function to display each row of checkout table dynamically
+        """
         product_buy = input("enter product name to buy :").title()
         #print(product_buy)
         if product_buy in all_data_base['all_products']:
             
-            product_quantity = int(input("please enter how many piece do you want to purchase "))
+            product_quantity = int(input("please enter how many piece do you want to purchase :"))
             sub_total = product_quantity* all_data_base['all_products'][product_buy]
             dict_of_record[product_buy] = product_quantity
             dict_of_record[str(product_buy)+"*"+str(product_quantity)] = sub_total
@@ -65,7 +86,7 @@ def product_buying():
             billing_table.append_row([count, product_buy, all_data_base['all_products'][product_buy],
                               product_quantity, sub_total
                              ])
-            buy_choice = input("if you want to add more product press y :").lower()
+            buy_choice = input("if you want to add more product press y else anyother key:").lower()
             if buy_choice == "y":
                 buy_pro()
             else:
@@ -96,6 +117,7 @@ if choice ==1:
     table = BeautifulTable()
     table.column_headers = ["Sr no.", "Product Name ", "Price"]
     count = 1
+    print(  )
     for data in all_data_base['all_products']:
         table.append_row([count, data, all_data_base['all_products'][data]])
         count += 1  
